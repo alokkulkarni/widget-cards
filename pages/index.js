@@ -1,8 +1,9 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
-export default function Home() {
+export default function Home({ cards }) {
   return (
     <div className={styles.container}>
       <Head>
@@ -13,15 +14,23 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to <a href="https://nextjs.org">Widgets!</a>
         </h1>
 
-        <div className={styles.grid}>
-          
-        </div>
+        {/* <pre>{JSON.stringify(cards, null, 2)}</pre> */}
+
+        <ul>
+          {cards.map((card) => (
+            <li key={card.slug}>
+              <Link href={`/${card.slug}`}>
+                <a>{card.title}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </main>
 
-      <footer className={styles.footer}>
+      {/* <footer className={styles.footer}>
         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
@@ -32,7 +41,71 @@ export default function Home() {
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
-      </footer>
+      </footer> */}
     </div>
   )
+}
+
+export async function getStaticProps() {
+
+    const result = await fetch(`https://graphql.contentful.com/content/v1/spaces/gma4quc32grm/environments/master`,{
+        method: `POST`,
+        headers: {
+            Authorization: `Bearer DrOaX91XAnJjeLYvsjxggaRYpaRNv4VKBHBWG13llm4`,
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          query: `
+            query getAllCards {
+              cardsCollection(order: [cardCategory_ASC, id_ASC]) {
+                items {
+                  id
+                  title
+                  slug
+                  cardSubTitle
+                  cardCategory
+                  cardThumbnail {
+                    url
+                  }
+                  cardBackgroundColor
+                  cardActionUrl
+                  cardShow
+                }
+              }
+            }
+          `,
+        })
+    });
+
+    if (!result.ok) {
+      console.error(result);
+      return {}
+    }
+    
+    const { data } = await result.json();
+    const cards = data.cardsCollection.items;
+
+  return {
+    props: {
+      cards,
+    }
+  }
+  /*
+    query {
+      cardsCollection {
+        items {
+          id
+          title
+          cardSubTitle
+          cardCategory
+          cardThumbnail {
+            url
+          }
+          cardBackgroundColor
+          cardActionUrl
+          cardShow
+        }
+      }
+    }
+  */
 }
