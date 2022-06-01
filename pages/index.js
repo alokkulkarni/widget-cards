@@ -17,17 +17,24 @@ export default function Home({ cards }) {
           Welcome to <a href="https://nextjs.org">Widgets!</a>
         </h1>
 
-        {/* <pre>{JSON.stringify(cards, null, 2)}</pre> */}
-
-        <ul>
-          {cards.map((card) => (
-            <li key={card.slug}>
-              <Link href={`/${card.slug}`}>
-                <a>{card.title}</a>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className={styles.grid}>
+          {cards.map((card, index) => (
+              <li key={index} className={styles.card}>
+                <Link href={`/${card.slug}`}>
+                  <a>
+                    <Image
+                      src={card.cardThumbnail.url}
+                      alt="Picture of the author"
+                      width={50}
+                      height={50}
+                    />
+                    <h2>{card.title}</h2>
+                    <p>{card.cardSubTitle}</p>
+                  </a>
+                </Link>
+              </li>
+            ))}
+        </div>
       </main>
 
       {/* <footer className={styles.footer}>
