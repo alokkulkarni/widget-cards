@@ -1,5 +1,6 @@
 .container {
   padding: 0 1rem;
+  justify-content: center;
 }
 
 .main {
@@ -133,6 +134,7 @@
 
 .containerscroll {
   display: flex;
+  justify-content: center;
   overflow-x: scroll;
   width: 100%;
   padding: 20px 0;
