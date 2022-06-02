@@ -1,9 +1,30 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useScroll } from "react-use-gesture";
+import { motion, useAnimation } from "framer-motion";
 import styles from '../styles/Home.module.css'
 
+
+const clamp = (value, clampAt = 30) => {
+  if (value > 0) {
+    return value > clampAt ? clampAt : value;
+  } else {
+    return value < -clampAt ? -clampAt : value;
+  }
+};
+
 export default function Home({ cards }) {
+  
+  const controls = useAnimation();
+  const bind = useScroll(event => {
+    controls.start({
+      transform: `perspective(500px) rotateY(${
+        event.scrolling ? clamp(event.delta[0]) : 0
+      }deg)`
+    });
+  });
+
   return (
     <div className={styles.container}>
       <Head>
@@ -17,23 +38,55 @@ export default function Home({ cards }) {
           Welcome to <a href="https://nextjs.org">Widgets!</a>
         </h1>
 
-        <div className={styles.grid}>
+        {/* <div className={styles.grid}>
           {cards.map((card, index) => (
               <div key={index} className={styles.card}>
                 <Link href={`/${card.slug}`}>
                   <a>
-                    <Image
-                      src={card.cardThumbnail.url}
-                      alt="Picture of the author"
-                      width={50}
-                      height={50}
-                    />
+                  <div style={{borderRadius: '5px', overflow: 'hidden'}}>
+                      <Image
+                        src={card.cardThumbnail.url}
+                        alt="Picture of the author"
+                        width={50}
+                        height={50}
+                        className={styles.makeImageCircular}
+                      />
+                    </div>
                     <h2>{card.title}</h2>
                     <p>{card.cardSubTitle}</p>
                   </a>
                 </Link>
               </div>
             ))}
+        </div> */}
+
+        <div className={styles.containerscroll} {...bind()}>
+          {cards.map((card , index) => (
+            <motion.div
+              key={index}
+              className={styles.card}
+              style={{
+                backgroundImage: `url("/white.jpeg")`
+              }}
+              animate={controls}
+            >
+                <Link href={`/${card.slug}`}>
+                  <a>
+                  <div style={{borderRadius: '5px', overflow: 'hidden'}}>
+                      <Image
+                        src={card.cardThumbnail.url}
+                        alt="Picture of the author"
+                        width={50}
+                        height={50}
+                        className={styles.makeImageCircular}
+                      />
+                    </div>
+                    <h2>{card.title}</h2>
+                    <p>{card.cardSubTitle}</p>
+                  </a>
+                </Link>
+            </motion.div>
+          ))}
         </div>
       </main>
 
