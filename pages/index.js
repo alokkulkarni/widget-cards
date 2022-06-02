@@ -2,7 +2,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useScroll } from "react-use-gesture";
-import { motion, useAnimation } from "framer-motion";
+// import { motion, useAnimation } from "framer-motion";
+import { animated, useSpring } from "react-spring";
 import styles from '../styles/Home.module.css'
 
 
@@ -15,10 +16,21 @@ const clamp = (value, clampAt = 30) => {
 };
 
 export default function Home({ cards }) {
+
+  const [style, set] = useSpring(() => ({
+    transform: "perspective(500px) rotateY(0deg)"
+  }));
   
-  const controls = useAnimation();
+  // const controls = useAnimation();
+  // const bind = useScroll(event => {
+  //   controls.start({
+  //     transform: `perspective(500px) rotateY(${
+  //       event.scrolling ? clamp(event.delta[0]) : 0
+  //     }deg)`
+  //   });
+  // });
   const bind = useScroll(event => {
-    controls.start({
+    set({
       transform: `perspective(500px) rotateY(${
         event.scrolling ? clamp(event.delta[0]) : 0
       }deg)`
@@ -38,37 +50,15 @@ export default function Home({ cards }) {
           Welcome to <a href="https://nextjs.org">Widgets!</a>
         </h1>
 
-        {/* <div className={styles.grid}>
-          {cards.map((card, index) => (
-              <div key={index} className={styles.card}>
-                <Link href={`/${card.slug}`}>
-                  <a>
-                  <div style={{borderRadius: '5px', overflow: 'hidden'}}>
-                      <Image
-                        src={card.cardThumbnail.url}
-                        alt="Picture of the author"
-                        width={50}
-                        height={50}
-                        className={styles.makeImageCircular}
-                      />
-                    </div>
-                    <h2>{card.title}</h2>
-                    <p>{card.cardSubTitle}</p>
-                  </a>
-                </Link>
-              </div>
-            ))}
-        </div> */}
-
         <div className={styles.containerscroll} {...bind()}>
           {cards.map((card , index) => (
-            <motion.div
+            <animated.div
               key={index}
               className={styles.card}
               style={{
+                ...style,
                 backgroundImage: `url("/white.jpeg")`
               }}
-              animate={controls}
             >
                 <Link href={`/${card.slug}`}>
                   <a>
@@ -85,23 +75,10 @@ export default function Home({ cards }) {
                     <p>{card.cardSubTitle}</p>
                   </a>
                 </Link>
-            </motion.div>
+            </animated.div>
           ))}
         </div>
       </main>
-
-      {/* <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer> */}
     </div>
   )
 }
@@ -150,22 +127,42 @@ export async function getStaticProps() {
       cards,
     }
   }
-  /*
-    query {
-      cardsCollection {
-        items {
-          id
-          title
-          cardSubTitle
-          cardCategory
-          cardThumbnail {
-            url
-          }
-          cardBackgroundColor
-          cardActionUrl
-          cardShow
-        }
-      }
-    }
-  */
 }
+
+
+
+{/* <div className={styles.grid}>
+          {cards.map((card, index) => (
+              <div key={index} className={styles.card}>
+                <Link href={`/${card.slug}`}>
+                  <a>
+                  <div style={{borderRadius: '5px', overflow: 'hidden'}}>
+                      <Image
+                        src={card.cardThumbnail.url}
+                        alt="Picture of the author"
+                        width={50}
+                        height={50}
+                        className={styles.makeImageCircular}
+                      />
+                    </div>
+                    <h2>{card.title}</h2>
+                    <p>{card.cardSubTitle}</p>
+                  </a>
+                </Link>
+              </div>
+            ))}
+        </div> */}
+
+
+             {/* <footer className={styles.footer}>
+        <a
+          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by{' '}
+          <span className={styles.logo}>
+            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+          </span>
+        </a>
+      </footer> */}
