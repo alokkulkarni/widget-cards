@@ -19,7 +19,7 @@ export default function Home({ cards }) {
 
         <div className={styles.grid}>
           {cards.map((card, index) => (
-              <li key={index} className={styles.card}>
+              <div key={index} className={styles.card}>
                 <Link href={`/${card.slug}`}>
                   <a>
                     <Image
@@ -32,7 +32,7 @@ export default function Home({ cards }) {
                     <p>{card.cardSubTitle}</p>
                   </a>
                 </Link>
-              </li>
+              </div>
             ))}
         </div>
       </main>
